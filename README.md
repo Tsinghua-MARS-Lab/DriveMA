@@ -1,8 +1,8 @@
 # DriveMA: Driving Vision-Language-Action Models with Verifiable Meta-Actions
 
 <p align="center">
-  <a href="https://arxiv.org/pdf/2605.31271">Paper</a> ·
-  <a href="https://tsinghua-mars-lab.github.io/DriveMA">Project Page</a>
+  <a href="https://arxiv.org/pdf/2605.31271"><img src="https://img.shields.io/badge/Paper-arXiv-B31B1B?logo=arxiv&logoColor=white" alt="Paper"></a>
+  <a href="https://tsinghua-mars-lab.github.io/DriveMA"><img src="https://img.shields.io/badge/Project%20Page-DriveMA-0A7E8C?logo=googlechrome&logoColor=white" alt="Project Page"></a>
 </p>
 
 DriveMA is a vision-language-action (VLA) framework for end-to-end driving planning. It introduces **verifiable meta-actions**—compact, interpretable decisions that bridge visual observations and future trajectories. By deriving the same interface from expert and predicted motion, DriveMA can supervise high-level decisions before reinforcement learning (RL) and explicitly reward consistency between a predicted meta-action and its resulting trajectory.
