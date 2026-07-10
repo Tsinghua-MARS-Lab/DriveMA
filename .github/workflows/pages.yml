@@ -2,7 +2,7 @@ name: Deploy DriveMA website
 
 on:
   push:
-    branches: [main]
+    branches: [gh-pages]
   workflow_dispatch:
 
 permissions:
