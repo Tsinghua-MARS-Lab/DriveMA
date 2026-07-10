@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DriveMA: Driving Vision-Language-Action Models with Verifiable Meta-Actions.">
+  <title>DriveMA | Verifiable Meta-Actions for Driving VLAs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/index.css">
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="#top">Drive<span>MA</span></a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <div class="nav-links" id="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#cases">Cases</a>
+      <a href="#citation">Citation</a>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-content reveal">
+        <p class="kicker">Driving Vision-Language-Action Models</p>
+        <h1>Drive<span>MA</span></h1>
+        <p class="hero-title">Driving Vision-Language-Action Models with <em>Verifiable Meta-Actions</em></p>
+        <p class="hero-summary">A compact, verifiable language interface that explicitly aligns high-level driving decisions with low-level trajectory planning.</p>
+        <p class="authors">Weicheng Zheng<sup>1,2</sup> · Yixin Huang<sup>1,3</sup> · Qiao Sun<sup>1</sup> · Derun Li<sup>1</sup> · Hang Zhao<sup>1,2,†</sup></p>
+        <p class="affiliations"><sup>1</sup> Shanghai Qi Zhi Institute &nbsp; <sup>2</sup> IIIS, Tsinghua University &nbsp; <sup>3</sup> Tongji University</p>
+        <div class="hero-actions">
+          <a class="button button-light" href="https://arxiv.org/pdf/2605.31271" target="_blank" rel="noopener">Paper <span>↗</span></a>
+          <a class="button button-light" href="#cases">Watch cases <span>↓</span></a>
+          <span class="button button-ghost button-soon">Data · Coming Soon</span>
+          <span class="button button-ghost button-soon">Code · Coming Soon</span>
+        </div>
+        <div class="hero-metrics" aria-label="DriveMA results">
+          <div><strong>8.079</strong><span>RFS Overall · 4B</span></div>
+          <div><strong>7.251</strong><span>RFS Spotlight · 2B</span></div>
+          <div><strong>2.616</strong><span>ADE@5s · 2B</span></div>
+        </div>
+      </div>
+      <div class="road-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    </section>
+
+    <section class="section overview" id="overview">
+      <div class="container motivation-copy reveal">
+        <div>
+          <p class="kicker">Motivation</p>
+          <h2>Language should guide the plan, not merely describe it.</h2>
+          <p>Driving vision-language-action models promise to bring semantic knowledge into end-to-end planning. Yet a plausible language-side decision does not guarantee that the predicted trajectory will execute it. This persistent <strong>language-action gap</strong> prevents language from becoming a dependable planning interface.</p>
+          <p>In the green-light example below, the SFT model predicts “accelerate, straight” but produces an almost stationary trajectory. DriveMA addresses this mismatch by making the intermediate language interface <strong>verifiable</strong>: it is constructed from expert motion, checked against predicted motion, and optimized for alignment.</p>
+        </div>
+        <p class="equation motivation-equation">driving input → meta-action → future trajectory</p>
+      </div>
+      <div class="container motivation-figures reveal">
+        <figure class="paper-card arc-card"><img src="./static/images/drivema/arc.jpg" alt="DriveMA uses vision to predict a meta-action before generating trajectory waypoints."><figcaption>DriveMA inserts a compact meta-action between visual observations and future waypoints.</figcaption></figure>
+        <figure class="paper-card case-card"><img src="./static/images/drivema/case1.jpg" alt="At a green light, SFT predicts acceleration but produces a nearly stationary trajectory; DriveMA with RL executes the intended acceleration."><figcaption>Verifiability exposes and corrects the language-action gap.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section method" id="method">
+      <div class="container reveal">
+        <div class="method-intro">
+          <p class="kicker">Method</p>
+          <h2>Make the decision interface verifiable, then optimize it.</h2>
+          <p>DriveMA formulates planning as a two-turn generation process: from a driving input, it predicts a compact meta-action and then generates future waypoints conditioned on that decision. The same trajectory-derived interface enables supervision before RL and consistency checking during RL.</p>
+        </div>
+        <div class="method-components">
+          <article><span>01</span><h3>Trajectory-grounded labels</h3><p>Expert future trajectories are mapped to discrete longitudinal and lateral actions. A one-step meta-action summarizes the full planning horizon with low-entropy, planning-relevant intent.</p></article>
+          <article><span>02</span><h3>Action-centric pretraining</h3><p>Before full planning SFT, DriveMA learns to predict expert meta-actions and uses driving VQA about intention, action, and risk to adapt the VLM to driving decisions.</p></article>
+          <article><span>03</span><h3>Turn-level RL</h3><p>Verifiability makes it possible to reward not only trajectory quality, but also whether the trajectory actually carries out the predicted meta-action.</p></article>
+        </div>
+        <div class="rl-focus">
+          <figure class="rl-card"><img src="./static/images/drivema/RL_arc.jpg" alt="DriveMA turn-level credit assignment reinforcement learning architecture."></figure>
+          <div>
+            <p class="kicker">Turn-level credit assignment RL</p>
+            <h3>Give each turn the feedback it can act on.</h3>
+            <p>DriveMA separates generation into a meta-action turn and a trajectory turn. Meta-action correctness is assigned to the first turn; trajectory quality and the trajectory-meta-action consistency reward are assigned to the second.</p>
+            <p>The predicted trajectory is projected back into the same verification space as the decision. By normalizing rewards within each turn, DriveMA avoids giving every token a single sequence-level signal and instead aligns high-level intent with the low-level plan precisely.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section results" id="results">
+      <div class="container reveal">
+        <div class="section-head">
+          <p class="kicker">Waymo Open Dataset · Vision-based E2E</p>
+          <h2>State-of-the-art planning performance.</h2>
+          <p>DriveMA-4B obtains the best RFS Overall, while DriveMA-2B leads on the challenging Spotlight subset and both ADE metrics.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Method</th><th>RFS Overall ↑</th><th>RFS Spotlight ↑</th><th>ADE@5s ↓</th><th>ADE@3s ↓</th></tr></thead>
+            <tbody>
+              <tr class="group"><td colspan="5">E2E planning methods</td></tr>
+              <tr><td>Swin-Trajectory</td><td>7.543</td><td>6.670</td><td>2.814</td><td>1.208</td></tr>
+              <tr><td>DiffusionLTF</td><td>7.717</td><td>6.414</td><td>2.891</td><td>1.356</td></tr>
+              <tr><td>UniPlan</td><td>7.780</td><td>6.654</td><td>2.986</td><td>1.308</td></tr>
+              <tr><td>FROST-Drive</td><td>7.856</td><td>7.094</td><td>3.565</td><td>2.537</td></tr>
+              <tr><td>RAP</td><td>8.043</td><td>7.204</td><td>2.646</td><td>1.174</td></tr>
+              <tr class="group"><td colspan="5">Driving VLA methods</td></tr>
+              <tr><td>AutoVLA</td><td>7.557</td><td>6.944</td><td>2.958</td><td>1.351</td></tr>
+              <tr><td>NoRD</td><td>7.709</td><td>-</td><td>-</td><td>1.250</td></tr>
+              <tr><td>HMVLM</td><td>7.737</td><td>6.727</td><td>3.072</td><td>1.327</td></tr>
+              <tr><td>Poutine</td><td>7.986</td><td>6.893</td><td>2.742</td><td>1.206</td></tr>
+              <tr class="ours"><td>DriveMA-2B</td><td>8.060</td><td>7.251</td><td>2.616</td><td>1.154</td></tr>
+              <tr class="ours"><td>DriveMA-4B</td><td>8.079</td><td>7.169</td><td>2.670</td><td>1.166</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ablation">
+      <div class="container reveal">
+        <div class="section-head">
+          <p class="kicker">Training strategy</p>
+          <h2>Each component makes the plan more faithful.</h2>
+          <p>Meta-action supervision starts the improvement; action-centric pretraining improves generalization; turn-level credit assignment delivers the strongest final result.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Training objective</th><th>RFS Overall ↑</th><th>RFS Spotlight ↑</th><th>ADE@5s ↓</th><th>L-A consistency ↑</th></tr></thead>
+            <tbody>
+              <tr><td>Direct Trajectory SFT</td><td>7.741</td><td>7.094</td><td>3.065</td><td>-</td></tr>
+              <tr><td>Meta-Action SFT w/o ACP</td><td>7.804</td><td>6.832</td><td>2.802</td><td>90.59%</td></tr>
+              <tr><td>Meta-Action SFT w/ ACP</td><td>7.893</td><td>7.189</td><td>2.774</td><td>91.31%</td></tr>
+              <tr><td>Vanilla GRPO w/ all rewards</td><td>7.978</td><td>7.087</td><td>2.660</td><td>95.95%</td></tr>
+              <tr><td>R<sub>traj</sub> + R<sub>cons</sub></td><td>8.052</td><td>7.029</td><td>2.674</td><td>98.80%</td></tr>
+              <tr class="ours"><td>R<sub>traj</sub> + R<sub>cons</sub> + R<sub>meta</sub></td><td>8.060</td><td>7.251</td><td>2.616</td><td>98.79%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section efficiency">
+      <div class="container reveal">
+        <div>
+          <p class="kicker">Data efficiency</p>
+          <h2>Better performance with fewer planning samples.</h2>
+          <p>With 77K planning samples and only 479 preference samples, DriveMA-2B reaches 8.005 RFS - surpassing previous VLA baselines trained on substantially larger datasets. ACP and turn-level RL then raise it to 8.060 RFS.</p>
+          <div class="efficiency-stats"><div><strong>77K</strong><span>planning samples</span></div><div><strong>479</strong><span>preference samples</span></div><div><strong>8.060</strong><span>RFS Overall</span></div></div>
+        </div>
+        <div class="efficiency-plots">
+          <figure class="plot-card"><img src="./static/images/drivema/efficiency-left.jpg" alt="DriveMA establishes a new data efficiency frontier on WOD-E2E."><figcaption>Data efficiency frontier</figcaption></figure>
+          <figure class="plot-card"><img src="./static/images/drivema/efficiency-right.jpg" alt="Training component gains from action-centric pretraining and reinforcement learning."><figcaption>Training component gains</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cases" id="cases">
+      <div class="container reveal">
+        <div class="section-head centered">
+          <p class="kicker">Qualitative comparisons</p>
+          <h2>Meta-actions that the trajectory actually executes.</h2>
+          <p>First, see how RL resolves language-action mismatches; then compare DriveMA with RAP across scenario types. Every case is shown as video.</p>
+        </div>
+        <div class="case-group">
+          <div class="case-group-heading"><p class="kicker">SFT vs RL</p><h3>RL makes the trajectory follow the stated meta-action.</h3></div>
+          <div class="case-grid">
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/sft-vs-rl-longitudinal-h264.mp4" type="video/mp4"></video><figcaption><span>01</span> Longitudinal language-action alignment</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/sft-vs-rl-lateral-h264.mp4" type="video/mp4"></video><figcaption><span>02</span> Lateral language-action alignment</figcaption></figure>
+          </div>
+        </div>
+        <div class="case-group">
+          <div class="case-group-heading"><p class="kicker">DriveMA vs RAP</p><h3>Planning comparisons across challenging scenario types.</h3></div>
+          <div class="case-grid">
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/side-intersection-h264.mp4" type="video/mp4"></video><figcaption><span>01</span> Side intersection</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/curvature-control-h264.mp4" type="video/mp4"></video><figcaption><span>02</span> Curvature control</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/cone-corridor-h264.mp4" type="video/mp4"></video><figcaption><span>03</span> Cone-defined corridor · A</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/cone-corridor-2-h264.mp4" type="video/mp4"></video><figcaption><span>04</span> Cone-defined corridor · B</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/maneuver-error-h264.mp4" type="video/mp4"></video><figcaption><span>05</span> Maneuver direction error · A</figcaption></figure>
+            <figure><video controls playsinline preload="metadata"><source src="./static/results/maneuver-error-2-h264.mp4" type="video/mp4"></video><figcaption><span>06</span> Maneuver direction error · B</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section citation" id="citation">
+      <div class="container citation-inner reveal">
+        <div><p class="kicker">Citation</p><h2>Reference DriveMA.</h2><p><a class="paper-link" href="https://arxiv.org/pdf/2605.31271" target="_blank" rel="noopener">Read the paper ↗</a><br>Data and code: Coming Soon.</p></div>
+        <pre><code>@article{zheng2026drivema,
+  title={DriveMA: Driving Vision-Language-Action Models with Verifiable Meta-Actions},
+  author={Zheng, Weicheng and Huang, Yixin and Sun, Qiao and Li, Derun and Zhao, Hang},
+  year={2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+  <footer><div class="container">DriveMA · Verifiable Meta-Actions for Driving VLAs</div></footer>
+  <script>
+    const button = document.querySelector('.menu-button');
+    const links = document.querySelector('.nav-links');
+    button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') === 'true'; button.setAttribute('aria-expanded', !open); links.classList.toggle('open', !open); });
+    document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => { button.setAttribute('aria-expanded', 'false'); links.classList.remove('open'); }));
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }), { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(item => observer.observe(item));
+  </script>
+</body>
+</html>
