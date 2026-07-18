@@ -3,6 +3,7 @@
 <p align="center">
   <a href="https://arxiv.org/pdf/2605.31271"><img src="https://img.shields.io/badge/Paper-arXiv-B31B1B?logo=arxiv&logoColor=white" alt="Paper"></a>
   <a href="https://tsinghua-mars-lab.github.io/DriveMA"><img src="https://img.shields.io/badge/Project%20Page-DriveMA-0A7E8C?logo=googlechrome&logoColor=white" alt="Project Page"></a>
+  <a href="https://huggingface.co/zwc2003/DriveMA-2B"><img src="https://img.shields.io/badge/Model-DriveMA--2B-FFD21E?logo=huggingface&logoColor=black" alt="DriveMA-2B Model"></a>
 </p>
 
 DriveMA is a vision-language-action (VLA) framework for end-to-end driving planning. It introduces **verifiable meta-actions**—compact, interpretable decisions that bridge visual observations and future trajectories. By deriving the same interface from expert and predicted motion, DriveMA can supervise high-level decisions before reinforcement learning (RL) and explicitly reward consistency between a predicted meta-action and its resulting trajectory.
@@ -11,15 +12,16 @@ This repository is developed from [ms-swift](https://github.com/modelscope/ms-sw
 
 ## Updates
 
+- **2026-07-18:** Released the [DriveMA-2B model weights](https://huggingface.co/zwc2003/DriveMA-2B).
 - **2026-07-10:** Initial release of the DriveMA codebase, training annotations, and three-stage training instructions.
-- The project currently provides source code and JSONL annotations. Dataset image files and pretrained checkpoints are **not** redistributed; follow [Data Preparation](#data-preparation) to download the annotations and original datasets, then update local image paths.
+- Dataset image files are **not** redistributed; follow [Data Preparation](#data-preparation) to download the annotations and original datasets, then update local image paths.
 
 ## Release Status
 
 - [x] Training code
 - [x] Testing code
 - [x] Training and validation annotations
-- [ ] Trained model weights — coming soon
+- [x] [DriveMA-2B model weights](https://huggingface.co/zwc2003/DriveMA-2B)
 
 ## Contents
 
@@ -27,6 +29,7 @@ This repository is developed from [ms-swift](https://github.com/modelscope/ms-sw
 - [Method](#method)
 - [Results](#results)
 - [Installation](#installation)
+- [Model Weights](#model-weights)
 - [Data Preparation](#data-preparation)
 - [Training](#training)
 - [Repository Structure](#repository-structure)
@@ -73,6 +76,14 @@ pip install -e .
 ```
 
 The training pipeline uses CUDA, PyTorch, DeepSpeed, and vLLM. Install versions compatible with your CUDA driver and hardware before launching training.
+
+## Model Weights
+
+The trained DriveMA-2B model is available on [Hugging Face](https://huggingface.co/zwc2003/DriveMA-2B):
+
+```bash
+hf download zwc2003/DriveMA-2B --local-dir <DRIVEMA_2B_PATH>
+```
 
 ### Base Model Weights
 
