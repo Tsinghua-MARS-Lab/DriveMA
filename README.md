@@ -229,7 +229,7 @@ If you find DriveMA useful, please cite our paper:
 ```bibtex
 @inproceedings{zheng2026drivema,
   title={DriveMA: Driving Vision-Language-Action Models with verifiable Meta-Actions},
-  author={Zheng, Weicheng and Huang, Yixin and Sun, Qiao and Li, Derun and Zhao, Hang},
+  author={Weicheng Zheng and Yixin Huang and Qiao Sun and Derun Li and Hang Zhao},
   booktitle={Proceedings of the Conference on Robot Learning (CoRL)},
   year={2026}
 }
