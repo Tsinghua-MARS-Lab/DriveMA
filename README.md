@@ -1,6 +1,7 @@
 # DriveMA: Driving Vision-Language-Action Models with Verifiable Meta-Actions
 
 <p align="center">
+  <a href="https://www.corl.org/"><img src="https://img.shields.io/badge/CoRL_2026-Accepted-2E7DD1" alt="Accepted at CoRL 2026"></a>
   <a href="https://arxiv.org/pdf/2605.31271"><img src="https://img.shields.io/badge/Paper-arXiv-B31B1B?logo=arxiv&logoColor=white" alt="Paper"></a>
   <a href="https://tsinghua-mars-lab.github.io/DriveMA"><img src="https://img.shields.io/badge/Project%20Page-DriveMA-0A7E8C?logo=googlechrome&logoColor=white" alt="Project Page"></a>
   <a href="https://huggingface.co/zwc2003/DriveMA-2B"><img src="https://img.shields.io/badge/Model-DriveMA--2B-FFD21E?logo=huggingface&logoColor=black" alt="DriveMA-2B Model"></a>
@@ -12,6 +13,7 @@ This repository is developed from [ms-swift](https://github.com/modelscope/ms-sw
 
 ## Updates
 
+- **2026-09-05:** 🎉 DriveMA is accepted to **CoRL 2026**!
 - **2026-07-18:** Released the [DriveMA-2B model weights](https://huggingface.co/zwc2003/DriveMA-2B).
 - **2026-07-10:** Initial release of the DriveMA codebase, training annotations, and three-stage training instructions.
 - Dataset image files are **not** redistributed; follow [Data Preparation](#data-preparation) to download the annotations and original datasets, then update local image paths.
@@ -225,10 +227,10 @@ This codebase is released under the [Apache License 2.0](LICENSE). The datasets 
 If you find DriveMA useful, please cite our paper:
 
 ```bibtex
-@article{zheng2026drivema,
+@inproceedings{zheng2026drivema,
   title={DriveMA: Driving Vision-Language-Action Models with verifiable Meta-Actions},
   author={Zheng, Weicheng and Huang, Yixin and Sun, Qiao and Li, Derun and Zhao, Hang},
-  journal={arXiv preprint arXiv:2605.31271},
+  booktitle={Proceedings of the Conference on Robot Learning (CoRL)},
   year={2026}
 }
 ```
